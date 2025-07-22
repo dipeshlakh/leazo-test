@@ -162,17 +162,17 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
       <label class="font-semibold block mb-2 text-gray-700">Select Game(s):</label>
       <div id="gameGrid" class="grid grid-cols-3 gap-4 mb-6">
         <label class="game-card cursor-pointer text-center">
-          <img src="gta5.jpg" class="game-img w-20 h-20 rounded-lg object-cover border border-gray-300 mx-auto" />
+          <img src="gta5.jpg" class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" />
           <input type="checkbox" name="Games[]" value="GTA 5" class="hidden" />
           <span class="text-sm block mt-1 text-gray-800">GTA 5</span>
         </label>
         <label class="game-card cursor-pointer text-center">
-          <img src="godofwar.jpg" class="game-img w-20 h-20 rounded-lg object-cover border border-gray-300 mx-auto" />
+          <img src="godofwar.jpg" class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" />
           <input type="checkbox" name="Games[]" value="God of War" class="hidden" />
           <span class="text-sm block mt-1 text-gray-800">God of War</span>
         </label>
         <label class="game-card cursor-pointer text-center">
-          <img src="spiderman.jpg" class="game-img w-20 h-20 rounded-lg object-cover border border-gray-300 mx-auto" />
+          <img src="spiderman.jpg" class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" />
           <input type="checkbox" name="Games[]" value="Spiderman" class="hidden" />
           <span class="text-sm block mt-1 text-gray-800">Spiderman</span>
         </label>
@@ -420,7 +420,7 @@ function clearRingFromGames() {
       card.addEventListener("click", () => {
         checkbox.checked = !checkbox.checked;
         img.classList.toggle("ring", checkbox.checked);
-        img.classList.toggle("ring-2", checkbox.checked);
+        img.classList.toggle("ring-[2.5px]", checkbox.checked);
         img.classList.toggle("ring-black", checkbox.checked);
       });
     });
