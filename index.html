@@ -357,22 +357,49 @@ function clearRingFromGames() {
 
 
   setTimeout(() => {
-    // Step navigation with validation
     document.getElementById("nextToStep2").addEventListener("click", () => {
-      const plan = localStorage.getItem("selectedRentalPlan") || "hourly";
+  const plan = localStorage.getItem("selectedRentalPlan");
+  const selectedGames = document.querySelectorAll(".game-card input[type='checkbox']:checked");
+  const selectedDate = document.getElementById("booking-date").value;
 
-      if (plan === "hourly") {
-        const slot = document.querySelector("select[name='hour-slot']").value;
-        if (!slot) {
-          alert("Please select a time slot.");
-          return;
-        }
-      }
+  if (selectedGames.length === 0) {
+    alert("Please select at least one game.");
+    return;
+  }
 
-      goToStep(2);
-    });
+  if (!selectedDate) {
+    alert("Please select a booking date.");
+    return;
+  }
 
-    document.getElementById("nextToStep3").addEventListener("click", () => goToStep(3));
+  if (plan === "hourly") {
+    const start = document.getElementById("startTime").value;
+    const end = document.getElementById("endTime").value;
+
+    if (!start) {
+      alert("Please select a start time.");
+      return;
+    }
+
+    if (!end) {
+      alert("Please select an end time.");
+      return;
+    }
+
+    if (parseInt(end) - parseInt(start) < 2) {
+      alert("Minimum 2 hours booking required.");
+      return;
+    }
+  }
+
+  goToStep(2);
+});
+  
+ // Next button for step 2 to step 3
+  document.getElementById("nextToStep3").addEventListener("click", () => {
+  goToStep(3);
+});
+
 
     // Game selection ring
     document.querySelectorAll(".game-card").forEach(card => {
