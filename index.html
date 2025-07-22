@@ -178,10 +178,20 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
         </label>
       </div>
 
-      <label class="block mb-2 font-semibold text-gray-700">Select Date:</label>
-      <div class="w-full">
-      <input type="date" id="booking-date" name="booking-date" required class="w-full max-w-full box-border border rounded px-4 py-2 mb-4 text-gray-700" />
-      </div> 
+      <div class="w-full overflow-hidden">
+  <label class="block mb-2 font-semibold text-gray-700">Select Date:</label>
+  <div class="w-full">
+    <input
+      type="date"
+      id="booking-date"
+      name="booking-date"
+      required
+      class="w-full border rounded px-4 py-2 mb-4 text-gray-700"
+      style="max-width: 100%; box-sizing: border-box; appearance: none; -webkit-appearance: none;"
+    />
+  </div>
+</div>
+
       <div id="hourly-time-inputs" class="hidden">
   <div class="flex flex-row flex-wrap gap-4 w-full">
     <div class="flex-1">
