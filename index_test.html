@@ -599,28 +599,25 @@ setTimeout(() => {
 
     let minHour = 10;
     if (selectedDate.toDateString() === now.toDateString()) {
-      const selectedPlan = localStorage.getItem('selectedRentalPlan');
-      const hour = now.getHours();
-      const min = now.getMinutes();
-      const currentHour = min > 0 ? hour + 1 : hour;
+  const selectedPlan = localStorage.getItem('selectedRentalPlan');
+  const hour = now.getHours();
+  const min = now.getMinutes();
+  const currentHour = min > 0 ? hour + 1 : hour;
 
-      if (selectedPlan === 'hourly') {
-        if (currentHour >= 19) {
-          dateInput.value = '';
-          alert("Hourly bookings are not allowed for today after 7 PM.");
-          return;
-        }
-        minHour = Math.max(currentHour, 10);
-      } else if (selectedPlan === 'day' && currentHour >= 18) {
-        dateInput.value = '';
-        alert("Day bookings not allowed after 6 PM for today.");
-        return;
-      } else if (selectedPlan === 'night' && currentHour >= 22) {
-        dateInput.value = '';
-        alert("Night bookings not allowed after 10 PM for today.");
-        return;
-      }
-    }
+  if (selectedPlan === 'hourly' && currentHour >= 19) {
+    alert("Hourly bookings are not allowed for today after 7 PM. Please select a later date.");
+    return;
+  }
+  if (selectedPlan === 'day' && currentHour >= 18) {
+    alert("Day bookings not allowed after 6 PM for today.");
+    return;
+  }
+  if (selectedPlan === 'night' && currentHour >= 22) {
+    alert("Night bookings not allowed after 10 PM for today.");
+    return;
+  }
+}
+
 
     if (minHour > 19) minHour = 20;
 
@@ -652,11 +649,17 @@ setTimeout(() => {
   });
 
   dateInput.addEventListener("change", () => {
+  // Wait a short time to let iOS users choose the date
+  setTimeout(() => {
+    if (!dateInput.value) return;
+
     updateStartTimeOptions();
     startTimeSelect.value = "";
     endTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
     endTimeSelect.disabled = true;
-  });
+  }, 200); // ~200ms lets the UI finish
+});
+
 
   // Step buttons
   document.getElementById("nextToStep2").addEventListener("click", () => {
