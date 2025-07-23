@@ -35,6 +35,13 @@
     padding-bottom: 0.5rem;
   }
 }
+
+  .game-img:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+
 </style>
 
   <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
@@ -331,6 +338,19 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
     goToStep(1);
     clearRingFromGames();
   }
+    else {
+    // Restore selected game ring visuals
+    setTimeout(() => {
+      document.querySelectorAll(".game-card").forEach(card => {
+        const img = card.querySelector("img");
+        const checkbox = card.querySelector("input[type='checkbox']");
+        if (checkbox.checked) {
+          img.classList.add("ring", "ring-[2.5px]", "ring-black");
+        }
+      });
+    }, 50); // small delay ensures DOM is ready
+  }
+
 
   // Save plan to localStorage
   localStorage.setItem('selectedRentalPlan', selectedPlan);
