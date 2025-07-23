@@ -604,19 +604,23 @@ setTimeout(() => {
   const min = now.getMinutes();
   const currentHour = min > 0 ? hour + 1 : hour;
 
+  let showError = false;
+
   if (selectedPlan === 'hourly' && currentHour >= 19) {
-    alert("Hourly bookings are not allowed for today after 7 PM. Please select a later date.");
-    return;
+    showError = "Hourly bookings are not allowed for today after 7 PM. Please select a later date.";
+  } else if (selectedPlan === 'day' && currentHour >= 18) {
+    showError = "Day bookings are not allowed after 6 PM today.";
+  } else if (selectedPlan === 'night' && currentHour >= 22) {
+    showError = "Night bookings are not allowed after 10 PM today.";
   }
-  if (selectedPlan === 'day' && currentHour >= 18) {
-    alert("Day bookings not allowed after 6 PM for today.");
-    return;
-  }
-  if (selectedPlan === 'night' && currentHour >= 22) {
-    alert("Night bookings not allowed after 10 PM for today.");
+
+  if (showError) {
+    alert(showError);
+    bookingDateInput.value = ""; // Clear date so it can't be used
     return;
   }
 }
+
 
 
     if (minHour > 19) minHour = 20;
