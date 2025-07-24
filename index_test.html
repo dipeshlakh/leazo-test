@@ -415,8 +415,8 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
 
 <script>
 let alertShown = false;
+let userOpenedCalendar = false; // ⬅️ New flag to detect iOS date picker touch
 
-// PLAN TIME CUTOFF LOGIC
 function getTodayCutoffHour(plan) {
   if (plan === "hourly") return 19; // 7 PM
   if (plan === "day") return 18;    // 6 PM
@@ -424,22 +424,18 @@ function getTodayCutoffHour(plan) {
   return 23;
 }
 
-// PLAN-TIME VALIDATION ON PLAN SELECTION
 function toggleDetails(button) {
   const selectedPlan = button.closest('[data-plan]').getAttribute('data-plan');
   const card = button.closest('[data-plan]');
   document.querySelectorAll('[data-plan]').forEach(c => c.classList.remove('ring', 'ring-black', 'ring-offset-2'));
   card.classList.add('ring', 'ring-black', 'ring-offset-2');
 
-  // Show modal
   document.getElementById('bookingModal').classList.remove('hidden');
   alertShown = false;
 
-  // Set plan
   localStorage.setItem('selectedRentalPlan', selectedPlan);
   document.getElementById('selectedPlanInput').value = selectedPlan;
 
-  // Reset or retain form
   const previousPlan = localStorage.getItem('previousRentalPlan');
   const isNewPlan = previousPlan && previousPlan !== selectedPlan;
   if (isNewPlan) {
@@ -449,7 +445,6 @@ function toggleDetails(button) {
   }
   localStorage.setItem('previousRentalPlan', selectedPlan);
 
-  // Set Date Picker min date
   const dateInput = document.getElementById("booking-date");
   const now = new Date();
   const today = new Date();
@@ -460,18 +455,17 @@ function toggleDetails(button) {
 
   let minDate = today;
   if (currentHour >= cutoffHour) {
-    minDate = new Date(today.getTime() + 24 * 60 * 60 * 1000); // set to tomorrow
+    minDate = new Date(today.getTime() + 24 * 60 * 60 * 1000);
   }
 
   const yyyy = minDate.getFullYear();
   const mm = String(minDate.getMonth() + 1).padStart(2, '0');
   const dd = String(minDate.getDate()).padStart(2, '0');
   dateInput.setAttribute("min", `${yyyy}-${mm}-${dd}`);
-  dateInput.value = ""; // Reset to avoid iOS issues
-dateInput.dataset.touched = "false"; // prevent accidental alerts
-userOpenedCalendar = false; // ✅ reset manual flag on plan change
+  dateInput.value = "";
+  dateInput.dataset.touched = "false";
+  userOpenedCalendar = false; // ⬅️ Reset on plan change
 
-  // Toggle time section display
   const hourlySection = document.getElementById("hourly-time-inputs");
   const fixedTimeDisplay = document.getElementById("fixed-time-display");
   if (selectedPlan === "hourly") {
@@ -483,17 +477,13 @@ userOpenedCalendar = false; // ✅ reset manual flag on plan change
   }
 }
 
-// DELIVERY TIME AUTO-FILL FOR DAY & NIGHT
-<script>
-let userOpenedCalendar = false;
-
-const bookingDate = document.getElementById("booking-date");
-
-bookingDate.addEventListener("pointerdown", function () {
+// iOS FIX: Detect if user tapped into calendar
+document.getElementById("booking-date").addEventListener("pointerdown", () => {
   userOpenedCalendar = true;
 });
 
-bookingDate.addEventListener("change", function () {
+// DATE CHANGE EVENT
+document.getElementById("booking-date").addEventListener("change", function () {
   const selectedPlan = document.getElementById("selectedPlanInput").value;
   const selectedDate = new Date(this.value);
   const now = new Date();
@@ -502,37 +492,26 @@ bookingDate.addEventListener("change", function () {
 
   const cutoffHour = getTodayCutoffHour(selectedPlan);
 
-  // 🚫 Block autofired changes from iOS
-  if (!userOpenedCalendar) return;
-
-  // ✅ Only allow "today" if before cutoff
   if (selectedDate.toDateString() === today.toDateString()) {
     if (now.getHours() >= cutoffHour) {
-      // Safe way to clear + re-open date picker on iOS
-      setTimeout(() => {
-        this.type = '';
-        this.type = 'date';
-      }, 100);
-      alert("Booking for today is closed for this plan.");
-      this.value = "";
-      return;
+      if (this.dataset.touched === "true" || userOpenedCalendar) {
+        alert("Booking for today is closed for this plan.");
+        this.value = "";
+        return;
+      }
     }
 
-    // Auto-set delivery time
     const hourNow = now.getHours();
     const roundedHour = hourNow + (now.getMinutes() > 0 ? 1 : 0);
-    const ampm = roundedHour >= 12 ? "PM" : "AM";
-    const formatted = `${roundedHour > 12 ? roundedHour - 12 : roundedHour}:00 ${ampm}`;
 
     if (selectedPlan === "day") {
-      document.getElementById("fixedStartTime").value = formatted;
+      document.getElementById("fixedStartTime").value = `${roundedHour}:00 ${roundedHour >= 12 ? 'PM' : 'AM'}`;
       document.getElementById("fixedEndTime").value = "8:00 PM";
     } else if (selectedPlan === "night") {
-      document.getElementById("fixedStartTime").value = formatted;
+      document.getElementById("fixedStartTime").value = `${roundedHour}:00 ${roundedHour >= 12 ? 'PM' : 'AM'}`;
       document.getElementById("fixedEndTime").value = "10:00 AM";
     }
   } else {
-    // Future dates
     if (selectedPlan === "day") {
       document.getElementById("fixedStartTime").value = "11:00 AM";
       document.getElementById("fixedEndTime").value = "8:00 PM";
@@ -542,36 +521,15 @@ bookingDate.addEventListener("change", function () {
     }
   }
 
-  // Reset hourly if needed
+  this.dataset.touched = "true";
+  userOpenedCalendar = false;
+
   document.getElementById("startTime").value = "";
   document.getElementById("endTime").value = "";
   document.getElementById("endTime").disabled = true;
-
-  // Reset flag
-  userOpenedCalendar = false;
-});
-</script>
-
-
-// GAME SELECTION RINGS
-function clearRingFromGames() {
-  document.querySelectorAll(".game-img").forEach(img => {
-    img.classList.remove("ring", "ring-2", "ring-black");
-  });
-}
-
-document.querySelectorAll(".game-card").forEach(card => {
-  const img = card.querySelector("img");
-  const checkbox = card.querySelector("input[type='checkbox']");
-  card.addEventListener("click", () => {
-    checkbox.checked = !checkbox.checked;
-    img.classList.toggle("ring", checkbox.checked);
-    img.classList.toggle("ring-[2.5px]", checkbox.checked);
-    img.classList.toggle("ring-black", checkbox.checked);
-  });
 });
 
-// TIME SLOT HANDLING FOR HOURLY PLAN
+// HOURLY TIME SLOT GENERATION
 const startTimeSelect = document.getElementById("startTime");
 const endTimeSelect = document.getElementById("endTime");
 const bookingDateInput = document.getElementById("booking-date");
@@ -593,7 +551,6 @@ const updateStartTimeOptions = () => {
   now.setSeconds(0, 0);
 
   let minHour = 10;
-
   if (selectedDate.toDateString() === now.toDateString()) {
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
@@ -602,7 +559,6 @@ const updateStartTimeOptions = () => {
   }
 
   if (minHour > 19) minHour = 20;
-
   const options = generateTimeOptions(minHour, 19);
   startTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
   options.forEach(opt => {
@@ -633,7 +589,25 @@ startTimeSelect.addEventListener("change", () => {
 
 bookingDateInput.addEventListener("change", updateStartTimeOptions);
 
-// GO TO NEXT STEP
+// GAME CARD CLICK SELECTION
+function clearRingFromGames() {
+  document.querySelectorAll(".game-img").forEach(img => {
+    img.classList.remove("ring", "ring-2", "ring-black");
+  });
+}
+
+document.querySelectorAll(".game-card").forEach(card => {
+  const img = card.querySelector("img");
+  const checkbox = card.querySelector("input[type='checkbox']");
+  card.addEventListener("click", () => {
+    checkbox.checked = !checkbox.checked;
+    img.classList.toggle("ring", checkbox.checked);
+    img.classList.toggle("ring-[2.5px]", checkbox.checked);
+    img.classList.toggle("ring-black", checkbox.checked);
+  });
+});
+
+// FORM STEP FLOW
 document.getElementById("nextToStep2").addEventListener("click", () => {
   const plan = localStorage.getItem("selectedRentalPlan");
   const selectedGames = document.querySelectorAll(".game-card input[type='checkbox']:checked");
@@ -653,7 +627,6 @@ document.getElementById("nextToStep2").addEventListener("click", () => {
   goToStep(2);
 });
 
-// FORM VALIDATION FOR STEP 2
 document.getElementById("nextToStep3").addEventListener("click", () => {
   const inputs = document.querySelectorAll('#step2 input[required]');
   let allValid = true;
@@ -666,7 +639,6 @@ document.getElementById("nextToStep3").addEventListener("click", () => {
   if (allValid) goToStep(3);
 });
 
-// STEP MANAGEMENT
 function goToStep(step) {
   for (let i = 1; i <= 3; i++) {
     document.getElementById(`step${i}`).classList.add("hidden");
@@ -681,7 +653,6 @@ function closeBooking() {
   clearRingFromGames();
 }
 
-// PAYMENT METHOD
 function selectPayment(method) {
   document.getElementById("paymentMethod").value = method;
   document.querySelectorAll(".payment-option").forEach(el => el.classList.remove("ring", "ring-black"));
@@ -693,7 +664,6 @@ function applyCoupon() {
   updateSummary();
 }
 
-// SUMMARY
 function updateSummary() {
   const plan = localStorage.getItem("selectedRentalPlan") || "hourly";
   const games = Array.from(document.querySelectorAll("input[name='Games[]']:checked"));
@@ -731,6 +701,7 @@ function updateSummary() {
   `;
 }
 </script>
+
 
 
 <!-- END OF UPDATED MULTISTEP BOOKING MODAL -->
