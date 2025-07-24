@@ -483,8 +483,20 @@ function toggleDetails(button) {
 }
 
 // DELIVERY TIME AUTO-FILL FOR DAY & NIGHT
-document.getElementById("booking-date").addEventListener("change", function () {   
-this.dataset.touched = "true"; // mark as user-selected
+let dateWasFocused = false;
+
+const bookingDate = document.getElementById("booking-date");
+
+bookingDate.addEventListener("focus", function () {
+  dateWasFocused = true;
+  this.dataset.touched = "false";
+});
+
+bookingDate.addEventListener("change", function () {
+  // Only proceed if the user focused and changed it (not autofill)
+  if (!dateWasFocused) return;
+
+  this.dataset.touched = "true";
   const selectedPlan = document.getElementById("selectedPlanInput").value;
   const selectedDate = new Date(this.value);
   const now = new Date();
@@ -493,27 +505,29 @@ this.dataset.touched = "true"; // mark as user-selected
 
   const cutoffHour = getTodayCutoffHour(selectedPlan);
 
- if (selectedDate.toDateString() === today.toDateString()) {
+  // If selected today, but it's past cutoff
+  if (selectedDate.toDateString() === today.toDateString()) {
     if (now.getHours() >= cutoffHour) {
-      if (this.dataset.touched === "true") {
-        alert("Booking for today is closed for this plan.");
-        this.value = "";
-      }
+      alert("Booking for today is closed for this plan.");
+      this.value = "";
       return;
     }
 
     // Auto-fill delivery time if Day/Night
     const hourNow = now.getHours();
     const roundedHour = hourNow + (now.getMinutes() > 0 ? 1 : 0);
+    const ampm = roundedHour >= 12 ? "PM" : "AM";
+    const formattedTime = `${(roundedHour > 12 ? roundedHour - 12 : roundedHour)}:00 ${ampm}`;
 
     if (selectedPlan === "day") {
-      document.getElementById("fixedStartTime").value = `${roundedHour}:00 ${roundedHour >= 12 ? 'PM' : 'AM'}`;
+      document.getElementById("fixedStartTime").value = formattedTime;
       document.getElementById("fixedEndTime").value = "8:00 PM";
     } else if (selectedPlan === "night") {
-      document.getElementById("fixedStartTime").value = `${roundedHour}:00 ${roundedHour >= 12 ? 'PM' : 'AM'}`;
+      document.getElementById("fixedStartTime").value = formattedTime;
       document.getElementById("fixedEndTime").value = "10:00 AM";
     }
   } else {
+    // Future date
     if (selectedPlan === "day") {
       document.getElementById("fixedStartTime").value = "11:00 AM";
       document.getElementById("fixedEndTime").value = "8:00 PM";
@@ -527,7 +541,11 @@ this.dataset.touched = "true"; // mark as user-selected
   document.getElementById("startTime").value = "";
   document.getElementById("endTime").value = "";
   document.getElementById("endTime").disabled = true;
+
+  // Reset focus flag
+  dateWasFocused = false;
 });
+
 
 // GAME SELECTION RINGS
 function clearRingFromGames() {
