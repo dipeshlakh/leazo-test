@@ -468,7 +468,8 @@ function toggleDetails(button) {
   const dd = String(minDate.getDate()).padStart(2, '0');
   dateInput.setAttribute("min", `${yyyy}-${mm}-${dd}`);
   dateInput.value = ""; // Reset to avoid iOS issues
-  dateInput.dataset.touched = "false"; // prevent accidental alerts
+dateInput.dataset.touched = "false"; // prevent accidental alerts
+userOpenedCalendar = false; // ✅ reset manual flag on plan change
 
   // Toggle time section display
   const hourlySection = document.getElementById("hourly-time-inputs");
@@ -483,20 +484,16 @@ function toggleDetails(button) {
 }
 
 // DELIVERY TIME AUTO-FILL FOR DAY & NIGHT
-let dateWasFocused = false;
+<script>
+let userOpenedCalendar = false;
 
 const bookingDate = document.getElementById("booking-date");
 
-bookingDate.addEventListener("focus", function () {
-  dateWasFocused = true;
-  this.dataset.touched = "false";
+bookingDate.addEventListener("pointerdown", function () {
+  userOpenedCalendar = true;
 });
 
 bookingDate.addEventListener("change", function () {
-  // Only proceed if the user focused and changed it (not autofill)
-  if (!dateWasFocused) return;
-
-  this.dataset.touched = "true";
   const selectedPlan = document.getElementById("selectedPlanInput").value;
   const selectedDate = new Date(this.value);
   const now = new Date();
@@ -505,29 +502,37 @@ bookingDate.addEventListener("change", function () {
 
   const cutoffHour = getTodayCutoffHour(selectedPlan);
 
-  // If selected today, but it's past cutoff
+  // 🚫 Block autofired changes from iOS
+  if (!userOpenedCalendar) return;
+
+  // ✅ Only allow "today" if before cutoff
   if (selectedDate.toDateString() === today.toDateString()) {
     if (now.getHours() >= cutoffHour) {
+      // Safe way to clear + re-open date picker on iOS
+      setTimeout(() => {
+        this.type = '';
+        this.type = 'date';
+      }, 100);
       alert("Booking for today is closed for this plan.");
       this.value = "";
       return;
     }
 
-    // Auto-fill delivery time if Day/Night
+    // Auto-set delivery time
     const hourNow = now.getHours();
     const roundedHour = hourNow + (now.getMinutes() > 0 ? 1 : 0);
     const ampm = roundedHour >= 12 ? "PM" : "AM";
-    const formattedTime = `${(roundedHour > 12 ? roundedHour - 12 : roundedHour)}:00 ${ampm}`;
+    const formatted = `${roundedHour > 12 ? roundedHour - 12 : roundedHour}:00 ${ampm}`;
 
     if (selectedPlan === "day") {
-      document.getElementById("fixedStartTime").value = formattedTime;
+      document.getElementById("fixedStartTime").value = formatted;
       document.getElementById("fixedEndTime").value = "8:00 PM";
     } else if (selectedPlan === "night") {
-      document.getElementById("fixedStartTime").value = formattedTime;
+      document.getElementById("fixedStartTime").value = formatted;
       document.getElementById("fixedEndTime").value = "10:00 AM";
     }
   } else {
-    // Future date
+    // Future dates
     if (selectedPlan === "day") {
       document.getElementById("fixedStartTime").value = "11:00 AM";
       document.getElementById("fixedEndTime").value = "8:00 PM";
@@ -537,14 +542,15 @@ bookingDate.addEventListener("change", function () {
     }
   }
 
-  // Reset hourly fields
+  // Reset hourly if needed
   document.getElementById("startTime").value = "";
   document.getElementById("endTime").value = "";
   document.getElementById("endTime").disabled = true;
 
-  // Reset focus flag
-  dateWasFocused = false;
+  // Reset flag
+  userOpenedCalendar = false;
 });
+</script>
 
 
 // GAME SELECTION RINGS
