@@ -47,6 +47,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.png" type="image/png">
     
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
   <body class="bg-white text-gray-900 font-sans pt-12 overflow-x-hidden">
     <!-- Header -->
@@ -200,13 +202,14 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
       <div class="w-full mb-4">
   <label class="block mb-2 font-semibold text-gray-700">Select Date:</label>
   <input
-    type="date"
-    id="booking-date"
-    name="booking-date"
-    required
-    class="w-full border rounded-lg px-4 py-2 text-gray-700 text-base"
-    style="max-width: 100%; box-sizing: border-box;"
-  />
+  type="text"
+  id="booking-date"
+  name="booking-date"
+  placeholder="Select date"
+  class="w-full border rounded-lg px-4 py-2 text-gray-700 text-base cursor-pointer"
+  readonly
+/>
+
 </div>
 
       <div id="hourly-time-inputs" class="hidden">
@@ -273,7 +276,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
         name="address-line"
         id="address-line"
         required
-        placeholder="House Name/ Area / Street"
+        placeholder="Flat / House no. / Building name"
         class="peer w-full border-[1.5px] rounded-lg px-4 py-2 text-gray-800 placeholder-transparent focus:outline-none focus:border-blue-700"
       />
       <label
@@ -283,7 +286,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
         peer-placeholder-shown:font-normal
         peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white peer-focus:font-medium cursor-text"
       >
-        House Name/ Area / Street *
+        Flat / House no. / Building name *
       </label>
     </div>
 
@@ -415,17 +418,23 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
 
 <script>
 let alertShown = false;
-let userOpenedCalendar = false;
 
-function getTodayCutoffHour(plan) {
-  if (plan === "hourly") return 19;
-  if (plan === "day") return 18;
-  if (plan === "night") return 22;
-  return 23;
+function isTodayDisabledForPlan(plan) {
+  const now = new Date();
+  const hour = now.getHours();
+
+  if (plan === "hourly" && hour >= 19) return true;
+  if (plan === "day" && hour >= 18) return true;
+  if (plan === "night" && hour >= 22) return true;
+
+  return false;
 }
 
 function toggleDetails(button) {
   const selectedPlan = button.closest('[data-plan]').getAttribute('data-plan');
+  const previousPlan = localStorage.getItem('selectedRentalPlan');
+  const isNewPlan = previousPlan && previousPlan !== selectedPlan;
+
   const card = button.closest('[data-plan]');
   document.querySelectorAll('[data-plan]').forEach(c => c.classList.remove('ring', 'ring-black', 'ring-offset-2'));
   card.classList.add('ring', 'ring-black', 'ring-offset-2');
@@ -433,238 +442,305 @@ function toggleDetails(button) {
   document.getElementById('bookingModal').classList.remove('hidden');
   alertShown = false;
 
-  localStorage.setItem('selectedRentalPlan', selectedPlan);
-  document.getElementById('selectedPlanInput').value = selectedPlan;
-
-  const previousPlan = localStorage.getItem('previousRentalPlan');
-  const isNewPlan = previousPlan && previousPlan !== selectedPlan;
   if (isNewPlan) {
     document.getElementById("bookingForm").reset();
     goToStep(1);
     clearRingFromGames();
-  }
-  localStorage.setItem('previousRentalPlan', selectedPlan);
-
-  const dateInput = document.getElementById("booking-date");
-  const now = new Date();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const currentHour = now.getHours();
-  const cutoffHour = getTodayCutoffHour(selectedPlan);
-
-  let minDate = today;
-  if (currentHour >= cutoffHour) {
-    minDate = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+  } else {
+    setTimeout(() => {
+      document.querySelectorAll(".game-card").forEach(card => {
+        const img = card.querySelector("img");
+        const checkbox = card.querySelector("input[type='checkbox']");
+        if (checkbox.checked) {
+          img.classList.add("ring", "ring-[2.5px]", "ring-black");
+        }
+      });
+    }, 50);
   }
 
-  const yyyy = minDate.getFullYear();
-  const mm = String(minDate.getMonth() + 1).padStart(2, '0');
-  const dd = String(minDate.getDate()).padStart(2, '0');
-  dateInput.setAttribute("min", `${yyyy}-${mm}-${dd}`);
-  dateInput.value = "";
-  dateInput.dataset.touched = "false";
-  userOpenedCalendar = false;
+  localStorage.setItem('selectedRentalPlan', selectedPlan);
+  document.getElementById('selectedPlanInput').value = selectedPlan;
 
   const hourlySection = document.getElementById("hourly-time-inputs");
   const fixedTimeDisplay = document.getElementById("fixed-time-display");
+  const fixedStartTime = document.getElementById("fixedStartTime");
+  const fixedEndTime = document.getElementById("fixedEndTime");
+  const fixedStartLabel = document.getElementById("fixedStartLabel");
+  const fixedEndLabel = document.getElementById("fixedEndLabel");
+
   if (selectedPlan === "hourly") {
     hourlySection.classList.remove("hidden");
     fixedTimeDisplay.classList.add("hidden");
   } else {
     hourlySection.classList.add("hidden");
     fixedTimeDisplay.classList.remove("hidden");
+
+    if (selectedPlan === "day") {
+      fixedStartTime.value = "11:00 AM";
+      fixedEndTime.value = "8:00 PM";
+      fixedStartLabel.textContent = "Delivery Time:";
+      fixedEndLabel.textContent = "Pick Up Time:";
+    } else {
+      fixedStartTime.value = "9:00 PM";
+      fixedEndTime.value = "10:00 AM";
+      fixedStartLabel.textContent = "Delivery Time:";
+      fixedEndLabel.textContent = "Pick Up Time:";
+    }
   }
+
+  setupFlatpickr();
+  updateDeliveryTime(); // Handle rounding for today
 }
 
-// 👇 iOS Safari Fix: Set "touched" only if user manually clicks into calendar
-const bookingDateInputEl = document.getElementById("booking-date");
-
-// Detect user interaction – Safari fix
-bookingDateInputEl.addEventListener("pointerdown", () => {
-  userOpenedCalendar = true;
-});
-
-// Fix for iOS Safari: mark input as touched only after real user tap
-bookingDateInputEl.addEventListener("click", function () {
-  setTimeout(() => {
-    // iOS Safari auto-selects date even without user choosing – delay helps catch real tap
-    if (!this.value) return;
-    this.dataset.touched = "true";
-    userOpenedCalendar = true;
-  }, 100);
-});
-
-
-// DATE CHANGE EVENT
-document.getElementById("booking-date").addEventListener("change", function () {
-  const selectedPlan = document.getElementById("selectedPlanInput").value;
-  const selectedDate = new Date(this.value);
-  const now = new Date();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const cutoffHour = getTodayCutoffHour(selectedPlan);
-
-  if (selectedDate.toDateString() === today.toDateString()) {
-    if (now.getHours() >= cutoffHour) {
-      if (this.dataset.touched === "true" || userOpenedCalendar) {
-        alert("Booking for today is closed for this plan.");
-        this.value = "";
-        return;
-      }
-    }
-
-    const hourNow = now.getHours();
-    const roundedHour = hourNow + (now.getMinutes() > 0 ? 1 : 0);
-
-    if (selectedPlan === "day") {
-      document.getElementById("fixedStartTime").value = `${roundedHour}:00 ${roundedHour >= 12 ? 'PM' : 'AM'}`;
-      document.getElementById("fixedEndTime").value = "8:00 PM";
-    } else if (selectedPlan === "night") {
-      document.getElementById("fixedStartTime").value = `${roundedHour}:00 ${roundedHour >= 12 ? 'PM' : 'AM'}`;
-      document.getElementById("fixedEndTime").value = "10:00 AM";
-    }
-  } else {
-    if (selectedPlan === "day") {
-      document.getElementById("fixedStartTime").value = "11:00 AM";
-      document.getElementById("fixedEndTime").value = "8:00 PM";
-    } else if (selectedPlan === "night") {
-      document.getElementById("fixedStartTime").value = "9:00 PM";
-      document.getElementById("fixedEndTime").value = "10:00 AM";
-    }
-  }
-
-  this.dataset.touched = "true";
-  userOpenedCalendar = false;
-
-  document.getElementById("startTime").value = "";
-  document.getElementById("endTime").value = "";
-  document.getElementById("endTime").disabled = true;
-});
-
-// HOURLY TIME SLOT GENERATION
-const startTimeSelect = document.getElementById("startTime");
-const endTimeSelect = document.getElementById("endTime");
-const bookingDateInput = document.getElementById("booking-date");
-
-const generateTimeOptions = (startHour, endHour) => {
-  const options = [];
-  for (let hour = startHour; hour <= endHour; hour++) {
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour > 12 ? hour - 12 : hour;
-    options.push({ value: hour, label: `${displayHour}:00 ${ampm}` });
-  }
-  return options;
-};
-
-const updateStartTimeOptions = () => {
-  const now = new Date();
-  const selectedDate = new Date(bookingDateInput.value);
-  selectedDate.setHours(0, 0, 0, 0);
-  now.setSeconds(0, 0);
-
-  let minHour = 10;
-  if (selectedDate.toDateString() === now.toDateString()) {
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    minHour = currentMinute > 0 ? currentHour + 1 : currentHour;
-    if (minHour < 10) minHour = 10;
-  }
-
-  if (minHour > 19) minHour = 20;
-  const options = generateTimeOptions(minHour, 19);
-  startTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
-  options.forEach(opt => {
-    const option = document.createElement("option");
-    option.value = opt.value;
-    option.textContent = opt.label;
-    startTimeSelect.appendChild(option);
-  });
-
-  endTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
-  endTimeSelect.disabled = true;
-};
-
-startTimeSelect.addEventListener("change", () => {
-  const start = parseInt(startTimeSelect.value);
-  if (!start) return;
-  const minEnd = start + 2;
-  const options = generateTimeOptions(minEnd, 21);
-  endTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
-  options.forEach(opt => {
-    const option = document.createElement("option");
-    option.value = opt.value;
-    option.textContent = opt.label;
-    endTimeSelect.appendChild(option);
-  });
-  endTimeSelect.disabled = false;
-});
-
-bookingDateInput.addEventListener("change", updateStartTimeOptions);
-
-// GAME CARD CLICK SELECTION
 function clearRingFromGames() {
   document.querySelectorAll(".game-img").forEach(img => {
     img.classList.remove("ring", "ring-2", "ring-black");
   });
 }
 
-document.querySelectorAll(".game-card").forEach(card => {
-  const img = card.querySelector("img");
-  const checkbox = card.querySelector("input[type='checkbox']");
-  card.addEventListener("click", () => {
-    checkbox.checked = !checkbox.checked;
-    img.classList.toggle("ring", checkbox.checked);
-    img.classList.toggle("ring-[2.5px]", checkbox.checked);
-    img.classList.toggle("ring-black", checkbox.checked);
-  });
-});
+function closeBooking() {
+  document.getElementById('bookingModal').classList.add('hidden');
+  goToStep(1);
+  clearRingFromGames();
+}
 
-// FORM STEP FLOW
-document.getElementById("nextToStep2").addEventListener("click", () => {
-  const plan = localStorage.getItem("selectedRentalPlan");
-  const selectedGames = document.querySelectorAll(".game-card input[type='checkbox']:checked");
-  const selectedDate = document.getElementById("booking-date").value;
+document.querySelectorAll('input[name="Games[]"]').forEach((checkbox) => {
+  checkbox.addEventListener('change', () => {
+    const checked = document.querySelectorAll('input[name="Games[]"]:checked');
+    const selectedPlan = document.getElementById("selectedPlanInput").value;
 
-  if (selectedGames.length === 0) return alert("Please select at least one game.");
-  if (!selectedDate) return alert("Please select a booking date.");
-
-  if (plan === "hourly") {
-    const start = document.getElementById("startTime").value;
-    const end = document.getElementById("endTime").value;
-    if (!start) return alert("Please select a start time.");
-    if (!end) return alert("Please select an end time.");
-    if (parseInt(end) - parseInt(start) < 2) return alert("Minimum 2 hours required.");
-  }
-
-  goToStep(2);
-});
-
-document.getElementById("nextToStep3").addEventListener("click", () => {
-  const inputs = document.querySelectorAll('#step2 input[required]');
-  let allValid = true;
-  inputs.forEach(input => {
-    if (!input.checkValidity()) {
-      input.reportValidity();
-      allValid = false;
+    if ((selectedPlan === 'hourly' || selectedPlan === 'day' || selectedPlan === 'night') && checked.length > 1) {
+      if (!alertShown) {
+        alert("Only 1 game is included. Extra games are ₹99 each.");
+        alertShown = true;
+      }
     }
   });
-  if (allValid) goToStep(3);
 });
 
+setTimeout(() => {
+  document.getElementById("nextToStep2").addEventListener("click", () => {
+    const plan = localStorage.getItem("selectedRentalPlan");
+    const selectedGames = document.querySelectorAll(".game-card input[type='checkbox']:checked");
+    const selectedDate = document.getElementById("booking-date").value;
+
+    if (selectedGames.length === 0) {
+      alert("Please select at least one game.");
+      return;
+    }
+
+    if (!selectedDate) {
+      alert("Please select a booking date.");
+      return;
+    }
+
+    if (plan === "hourly") {
+      const start = document.getElementById("startTime").value;
+      const end = document.getElementById("endTime").value;
+
+      if (!start || !end) {
+        alert("Please select both start and end times.");
+        return;
+      }
+
+      if (parseInt(end) - parseInt(start) < 2) {
+        alert("Minimum 2 hours booking required.");
+        return;
+      }
+    }
+
+    goToStep(2);
+  });
+
+  document.getElementById("nextToStep3").addEventListener("click", () => {
+    const inputs = document.querySelectorAll('#step2 input[required]');
+    let allValid = true;
+
+    inputs.forEach((input) => {
+      if (!input.checkValidity()) {
+        input.reportValidity();
+        allValid = false;
+      }
+    });
+
+    if (allValid) {
+      goToStep(3);
+    }
+  });
+
+  document.querySelectorAll(".game-card").forEach(card => {
+    const img = card.querySelector("img");
+    const checkbox = card.querySelector("input[type='checkbox']");
+    card.addEventListener("click", () => {
+      checkbox.checked = !checkbox.checked;
+      img.classList.toggle("ring", checkbox.checked);
+      img.classList.toggle("ring-[2.5px]", checkbox.checked);
+      img.classList.toggle("ring-black", checkbox.checked);
+    });
+  });
+
+  const startTimeSelect = document.getElementById("startTime");
+  const endTimeSelect = document.getElementById("endTime");
+  const bookingDateInput = document.getElementById("booking-date");
+
+  const generateTimeOptions = (startHour, endHour) => {
+    const options = [];
+    for (let hour = startHour; hour <= endHour; hour++) {
+      const ampm = hour >= 12 ? "PM" : "AM";
+      const displayHour = hour > 12 ? hour - 12 : hour;
+      options.push({ value: hour, label: `${displayHour}:00 ${ampm}` });
+    }
+    return options;
+  };
+
+  const updateStartTimeOptions = () => {
+    const selectedDate = new Date(bookingDateInput.value);
+    const now = new Date();
+    let minHour = 10;
+    const selectedPlan = document.getElementById("selectedPlanInput").value;
+
+    if (selectedDate.toDateString() === now.toDateString()) {
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+      minHour = currentMinute > 0 ? currentHour + 1 : currentHour;
+      if (minHour < 10) minHour = 10;
+    }
+
+    if (minHour > 19) minHour = 20;
+
+    const options = generateTimeOptions(minHour, 19);
+    startTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
+    options.forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt.value;
+      option.textContent = opt.label;
+      startTimeSelect.appendChild(option);
+    });
+
+    endTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
+    endTimeSelect.disabled = true;
+  };
+
+  startTimeSelect.addEventListener("change", () => {
+    const start = parseInt(startTimeSelect.value);
+    if (!start) return;
+
+    const minEnd = start + 2;
+    const options = generateTimeOptions(minEnd, 21);
+    endTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
+    options.forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt.value;
+      option.textContent = opt.label;
+      endTimeSelect.appendChild(option);
+    });
+
+    endTimeSelect.disabled = false;
+  });
+
+  bookingDateInput.addEventListener("change", () => {
+    updateStartTimeOptions();
+    startTimeSelect.value = "";
+    endTimeSelect.innerHTML = `<option value="">-- Select --</option>`;
+    endTimeSelect.disabled = true;
+    updateDeliveryTime();
+  });
+
+  setupFlatpickr();
+  updateStartTimeOptions();
+
+}, 0);
+
+// 🆕 Setup dynamic flatpickr minDate
+function setupFlatpickr() {
+  const now = new Date();
+  const selectedPlan = localStorage.getItem("selectedRentalPlan") || "hourly";
+  const disableToday = isTodayDisabledForPlan(selectedPlan);
+
+  flatpickr("#booking-date", {
+    dateFormat: "Y-m-d",
+    disableMobile: true,
+    minDate: disableToday ? new Date(now.setDate(now.getDate() + 1)) : "today"
+  });
+}
+
+// 🆕 Round delivery time up if today selected for day/night
+function updateDeliveryTime() { 
+  const selectedPlan = document.getElementById("selectedPlanInput").value;
+  const selectedDateStr = document.getElementById("booking-date").value;
+  const fixedStartTime = document.getElementById("fixedStartTime");
+
+  if (!selectedDateStr || (selectedPlan !== "day" && selectedPlan !== "night")) return;
+
+  const now = new Date();
+  const selectedDate = new Date(selectedDateStr);
+  const isToday = selectedDate.toDateString() === now.toDateString();
+
+  // Helper to format hour
+  const formatHour = (hour) => {
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    return `${displayHour}:00 ${ampm}`;
+  };
+
+  if (selectedPlan === "day") {
+    if (isToday) {
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+
+      if (currentHour >= 11) {
+        // After 11 AM, round up to next hour
+        let hour = currentHour;
+        if (currentMinute > 0) hour += 1;
+        fixedStartTime.value = formatHour(hour);
+      } else {
+        // Before 11 AM, keep default
+        fixedStartTime.value = "11:00 AM";
+      }
+    } else {
+      fixedStartTime.value = "11:00 AM";
+    }
+  }
+
+  if (selectedPlan === "night") {
+    if (isToday) {
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+
+      if (currentHour >= 21) {
+        // After 9 PM → round up to next hour
+        let hour = currentHour;
+        if (currentMinute > 0) hour += 1;
+        fixedStartTime.value = formatHour(hour);
+      } else {
+        // Before 9 PM → show default
+        fixedStartTime.value = "9:00 PM";
+      }
+    } else {
+      // Future date → default
+      fixedStartTime.value = "9:00 PM";
+    }
+  }
+}
+
+
+
+
+// 📋 Summary step and navigation
 function goToStep(step) {
   for (let i = 1; i <= 3; i++) {
     document.getElementById(`step${i}`).classList.add("hidden");
   }
   document.getElementById(`step${step}`).classList.remove("hidden");
+
   if (step === 3) updateSummary();
 }
 
-function closeBooking() {
-  document.getElementById('bookingModal').classList.add('hidden');
-  goToStep(1);
-  clearRingFromGames();
+function goBackStep() {
+  const current = [1, 2, 3].find(i => !document.getElementById(`step${i}`).classList.contains("hidden"));
+  if (current > 1) {
+    goToStep(current - 1);
+  }
 }
 
 function selectPayment(method) {
@@ -695,7 +771,9 @@ function updateSummary() {
     extraGameLines = gameNames.slice(1).map(name => `<div>Extra Game: ${name} – ₹99</div>`).join('');
   }
 
+  let deliveryCharge = 0;
   let couponDiscount = 0;
+
   if (coupon === "freegame" && extraGameCharges >= 99) couponDiscount += 99;
   if (coupon === "flat50") couponDiscount += 50;
   if (coupon === "percent20") couponDiscount += Math.floor(0.2 * (planPrice + extraGameCharges));
@@ -704,19 +782,19 @@ function updateSummary() {
   let upiDiscount = paymentMethod === "upi" ? Math.floor(0.05 * subtotal) : 0;
   let total = Math.max(subtotal - upiDiscount, 0);
 
-  document.getElementById("summaryBreakdown").innerHTML = `
+  let summaryHTML = `
     <div>Plan Price: ₹${planPrice}</div>
     ${firstGameLabel}
     ${extraGameLines}
     <div>Delivery: <span class='line-through'>₹99</span> FREE</div>
     ${couponDiscount > 0 ? `<div>Coupon Discount: -₹${couponDiscount}</div>` : ''}
-    ${upiDiscount > 0 ? `<div>UPI Discount (5%): -₹${upiDiscount}</div>` : ''}
+    ${upiDiscount > 0 ? `<div>UPI Discount (10%): -₹${upiDiscount}</div>` : ''}
     <div class='font-bold text-lg mt-2'>Total: ₹${total}</div>
   `;
+
+  document.getElementById("summaryBreakdown").innerHTML = summaryHTML;
 }
 </script>
-
-
 
 <!-- END OF UPDATED MULTISTEP BOOKING MODAL -->
 
