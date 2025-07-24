@@ -478,16 +478,23 @@ function toggleDetails(button) {
 }
 
 // 👇 iOS Safari Fix: Set "touched" only if user manually clicks into calendar
-document.getElementById("booking-date").addEventListener("click", function () {
-  if (this.dataset.touched !== "true") {
-    this.dataset.touched = "true";
-  }
-});
+const bookingDateInputEl = document.getElementById("booking-date");
 
-// ⬇️ Detect user interaction (useful on some iOS devices)
-document.getElementById("booking-date").addEventListener("pointerdown", () => {
+// Detect user interaction – Safari fix
+bookingDateInputEl.addEventListener("pointerdown", () => {
   userOpenedCalendar = true;
 });
+
+// Fix for iOS Safari: mark input as touched only after real user tap
+bookingDateInputEl.addEventListener("click", function () {
+  setTimeout(() => {
+    // iOS Safari auto-selects date even without user choosing – delay helps catch real tap
+    if (!this.value) return;
+    this.dataset.touched = "true";
+    userOpenedCalendar = true;
+  }, 100);
+});
+
 
 // DATE CHANGE EVENT
 document.getElementById("booking-date").addEventListener("change", function () {
