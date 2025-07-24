@@ -415,12 +415,12 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
 
 <script>
 let alertShown = false;
-let userOpenedCalendar = false; // ⬅️ New flag to detect iOS date picker touch
+let userOpenedCalendar = false;
 
 function getTodayCutoffHour(plan) {
-  if (plan === "hourly") return 19; // 7 PM
-  if (plan === "day") return 18;    // 6 PM
-  if (plan === "night") return 22;  // 10 PM
+  if (plan === "hourly") return 19;
+  if (plan === "day") return 18;
+  if (plan === "night") return 22;
   return 23;
 }
 
@@ -464,7 +464,7 @@ function toggleDetails(button) {
   dateInput.setAttribute("min", `${yyyy}-${mm}-${dd}`);
   dateInput.value = "";
   dateInput.dataset.touched = "false";
-  userOpenedCalendar = false; // ⬅️ Reset on plan change
+  userOpenedCalendar = false;
 
   const hourlySection = document.getElementById("hourly-time-inputs");
   const fixedTimeDisplay = document.getElementById("fixed-time-display");
@@ -477,7 +477,14 @@ function toggleDetails(button) {
   }
 }
 
-// iOS FIX: Detect if user tapped into calendar
+// 👇 iOS Safari Fix: Set "touched" only if user manually clicks into calendar
+document.getElementById("booking-date").addEventListener("click", function () {
+  if (this.dataset.touched !== "true") {
+    this.dataset.touched = "true";
+  }
+});
+
+// ⬇️ Detect user interaction (useful on some iOS devices)
 document.getElementById("booking-date").addEventListener("pointerdown", () => {
   userOpenedCalendar = true;
 });
