@@ -598,7 +598,7 @@ setTimeout(() => {
   };
 
   const updateStartTimeOptions = () => {
-    const selectedDate = new Date(bookingDateInput.value);
+    const selectedDate = flatpickr.parseDate(bookingDateInput.value, "d/m/Y");
     const now = new Date();
     let minHour = 10;
     const selectedPlan = document.getElementById("selectedPlanInput").value;
@@ -677,7 +677,7 @@ function updateDeliveryTime() {
   if (!selectedDateStr || (selectedPlan !== "day" && selectedPlan !== "night")) return;
 
   const now = new Date();
-  const selectedDate = new Date(selectedDateStr);
+  const selectedDate = flatpickr.parseDate(selectedDateStr, "d/m/Y");
   const isToday = selectedDate.toDateString() === now.toDateString();
 
   // Helper to format hour
