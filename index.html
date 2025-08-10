@@ -49,6 +49,8 @@
     
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+    
 </head>
   <body class="bg-white text-gray-900 font-sans pt-12 overflow-x-hidden">
     <!-- Header -->
@@ -1019,6 +1021,8 @@ const cityDeliveryPrices = {
   "Mandsaur": 99
 };
 
+  const BACKEND = "https://leazo-backend-k052.onrender.com";
+  
 function updateSummary() {
   const plan = localStorage.getItem("selectedRentalPlan") || "hourly";
   const bookingDate = document.getElementById("booking-date")?.value || "";
@@ -1193,15 +1197,71 @@ function showToast(msg) {
   setTimeout(() => toast.remove(), 3000);
 }
 
-document.getElementById("bookingForm").addEventListener("submit", function () {
-  const btn = document.getElementById("bookBtn");
-  btn.disabled = true;
-  btn.innerHTML = `
-    <svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.372 0 0 5.372 0 12h4z"/>
-    </svg> Booking...`;
+document.getElementById("bookingForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const bookBtn = document.getElementById("bookBtn");
+    bookBtn.disabled = true;
+    bookBtn.innerText = "Processing...";
+
+    // Gather form data
+    const plan = document.querySelector('input[name="plan"]:checked')?.value || "";
+    const hours = plan === "hourly" ? parseInt(document.getElementById("hours").value || "2") : null;
+
+    const games = Array.from(document.querySelectorAll('input[name="Games[]"]:checked')).map(el => ({
+        name: el.value,
+        price: parseInt(el.getAttribute("data-price") || "0")
+    }));
+
+    const bookingPayload = {
+        plan,
+        hours,
+        games,
+        bookingDate: document.getElementById("bookingDate").value,
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address-line").value,
+        city: document.getElementById("city").value,
+        paymentMethod: document.querySelector('input[name="payment"]:checked')?.value || "cod",
+        addController: document.getElementById("addController").checked,
+        coupon: document.getElementById("coupon")?.value || ""
+    };
+
+    try {
+        const resp = await fetch(BACKEND + "/create-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(bookingPayload)
+        });
+        const data = await resp.json();
+
+        if (!resp.ok) throw new Error(data.error || "Order creation failed");
+
+        if (bookingPayload.paymentMethod === "cod") {
+            alert(`Booking placed successfully!\nOrder ID: ${data.orderId}`);
+            bookBtn.disabled = false;
+            bookBtn.innerText = "Book Now";
+            return;
+        }
+
+        if (!data.paymentSessionId) throw new Error("No payment session returned");
+
+        const cashfree = Cashfree({ mode: "sandbox" }); // change to 'production' when live
+        await cashfree.checkout({
+            paymentSessionId: data.paymentSessionId,
+            returnUrl: window.location.origin + "/?order_id=" + data.orderId,
+            redirectTarget: "_self"
+        });
+
+    } catch (err) {
+        console.error(err);
+        alert("Payment start failed: " + err.message);
+        bookBtn.disabled = false;
+        bookBtn.innerText = "Book Now";
+    }
 });
+
 
 function resetBookingState() {
   // Reset coupon
@@ -1394,4 +1454,5 @@ function updatePlanCardPricingByCity(city) {
 
 
   </body>
+
 </html>
