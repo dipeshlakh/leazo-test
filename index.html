@@ -48,11 +48,43 @@
   <link rel="icon" href="favicon.png" type="image/png">
     
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
-    
+<!-- Performance hints -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="dns-prefetch" href="//fonts.gstatic.com">
+  <link rel="preload" as="image" href="mandsaur.webp">
+  <link rel="preload" as="image" href="pratapgarh.webp">
+  <link rel="preload" as="image" href="neemuch.webp">
+  <link rel="preload" as="image" href="ps5-slimmobile.webp">
+  <link rel="preload" as="image" href="ps5-slimfordesktop.webp">
+  <link rel="preload" as="image" href="gow1.webp">
+  <link rel="preload" as="image" href="f1.webp">
 </head>
   <body class="bg-white text-gray-900 font-sans pt-12 overflow-x-hidden">
+    <div id="cityModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+  <div class="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-sm text-center relative z-50">
+    <h2 class="text-xl font-semibold mb-4">Choose Your City</h2>
+
+    <div class="grid grid-cols-3 gap-4 mb-4">
+      <button type="button" class="city-btn flex flex-col items-center" data-city="Neemuch">
+        <img src="neemuch.webp" class="w-13 h-13" alt="Neemuch" >
+        <span class="text-lg font-medium">Neemuch</span>
+      </button>
+      <button type="button" class="city-btn flex flex-col items-center" data-city="Mandsaur">
+        <img src="mandsaur.webp" class="w-13 h-13" alt="Mandsaur" >
+        <span class="text-lg font-medium">Mandsaur</span>
+      </button>
+      <button type="button" class="city-btn flex flex-col items-center" data-city="Pratapgarh">
+        <img src="pratapgarh.webp" class="w-13 h-13" alt="Pratapgarh" >
+        <span class="text-lg font-medium">Pratapgarh</span>
+      </button>
+    </div>
+
+    <p class="text-xs text-gray-500">We currently serve this region only.</p>
+  </div>
+</div>
     <!-- Header -->
     <header class="w-full fixed top-0 z-50 bg-[#FFD345] py-2 px-4 shadow-md border-b-4 border-[#393be5]">
       <div class="container mx-auto flex justify-between items-center">
@@ -65,7 +97,6 @@
     <a href="#home" class="block px-4 py-2 hover:bg-gray-100">Home</a>
     <a href="#booknow" class="block px-4 py-2 hover:bg-gray-100">Book Now</a>
     <a href="#how" class="block px-4 py-2 hover:bg-gray-100">How It Works</a>
-    <a href="TnC.html" class="block px-4 py-2 hover:bg-gray-100">Terms & Conditions</a>
     <a href="#contact" class="block px-4 py-2 hover:bg-gray-100">Contact Us</a> 
   </div>
 </div>
@@ -73,7 +104,6 @@
   <a href="#home" class="hover:underline">Home</a>
   <a href="#booknow" class="hover:underline">Book Now</a>
   <a href="#how" class="hover:underline">How It Works</a>
-  <a href="TnC.html" class="hover:underline">Terms & Conditions</a>
   <a href="#contact" class="hover:underline">Contact Us</a>
 </nav>
 <script>
@@ -93,71 +123,138 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
 
 
     <!-- Hero Section -->
-    <section id="home" class="text-center pt-6 pb-4 bg-gray-100 text-white">
-      <div class="text-2xl md:text-4xl font-bold text-black mb-4 tracking-tight leading-snug">Get Your Game On – Rent the PS5 Now</div>
-<p class="text-sm md:text-lg text-red-600 font-semibold mb-2">Launch Offer: Flat 50% Off – Limited Time Only!</p>
-      <div class="flex justify-center mb-6 relative w-fit mx-auto">
-    <div class="absolute inset-0 rounded-full bg-gradient-to-r from-[#FFD345] via-white to-[#393be5] blur-2xl opacity-50 scale-125 z-0"></div>
-    <img src="ps5-slim.png" alt="PS5 Slim" class="w-full max-w-xs md:max-w-md object-contain relative z-10 drop-shadow" />
-
+    <!-- Hero Section -->
+<section id="home" class="text-center pt-6 pb-4 bg-gray-100 text-white relative">
+  <div class="text-2xl md:text-4xl font-bold text-black mb-4 tracking-tight leading-snug">
+    Get Your Game On – Rent the PS5 Now
   </div>
-      <h2 class="text-2xl md:text-4xl font-bold mb-4 text-black">Kharido Mat, Leazo Karo</h2>
-      <p class="text-lg md:text-2xl leading-snug tracking-tight mb-2 text-gray-700">Starting at ₹99/hour</p>
-      <a href="#booknow" class="mt-2 mb-4 inline-block bg-black text-white px-6 py-3 rounded-full text-sm md:text-base transition duration-200 ease-in-out transform hover:scale-105 hover:bg-gray-800 font-semibold">Book Now</a>
-    </section>
+  <p class="text-sm md:text-lg text-red-700 font-bold mb-2">
+    Launch Offer: Flat 50% Off – Limited Time Only!
+  </p>
+  <div class="flex justify-center mb-6 relative w-fit mx-auto">
+    <div class="absolute inset-0 rounded-full bg-gradient-to-r from-[#FFD345] via-white to-[#393be5] blur-2xl opacity-40 scale-125 z-0"></div>
+    <img src="ps5-slimmobile.webp" alt="PS5 Slim Mobile" class="block md:hidden w-full max-w-lg object-contain relative z-10"/ fetchpriority="high" decoding="async">
+    <img src="ps5-slimfordesktop.webp" alt="PS5 Slim Desktop" class="hidden md:block w-full max-w-full object-contain relative z-10"/ fetchpriority="high" decoding="async">
+  </div>
+  <h2 class="text-2xl md:text-4xl font-bold mb-4 text-black">Kharido Mat, Leazo Karo</h2>
+  <p class="text-lg md:text-2xl leading-snug tracking-tight mb-2 text-gray-700">Starting at ₹99/hour</p>
+  <a href="#booknow" class="mt-2 mb-4 inline-block bg-black text-white px-6 py-3 rounded-full text-sm md:text-base transition duration-200 ease-in-out transform hover:scale-105 hover:bg-gray-800 font-semibold">Book Now</a>
+
+  <!-- Bottom corner images -->
+  <img src="gow1.webp" alt="Left Corner" class="absolute bottom-0 left-0 w-36 sm:w-40 md:w-72 h-auto z-20 md:left-20" >
+  <img src="f1.webp" alt="Right Corner" class="absolute bottom-0 right-0 w-[9.5rem] sm:w-40 md:w-72 h-auto z-20 md:right-20" >
+</section>
+
 
     <!-- Select Plan -->
     <section id="booknow" class="px-4 pt-6 pb-16">
       <div class="container mx-auto text-center">
-        <h3 class="text-2xl md:text-3xl font-bold mb-6">Select a Plan</h3>
+        <h3 class="text-2xl md:text-3xl font-bold mb-5">Select a Plan</h3>
+ 
         <div class="flex flex-wrap justify-center gap-6 px-4 w-full">
+
           
 
-<div data-plan="hourly" class="relative border rounded-lg p-6 w-full max-w-xs flex flex-col justify-between items-center text-center transition duration-200 ease-in-out transform hover:scale-105 shadow-sm">
+<div data-plan="hourly" class="relative border rounded-xl p-6 w-full max-w-xs flex flex-col justify-between items-center text-center transition duration-200 ease-in-out transform md:hover:scale-105 shadow-sm border-b-4 border-black">
   <div class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">50% OFF</div>
-            <h4 class="text-2xl font-bold">🕒<br>Hourly Plan</h4>
-            <p class="text-xl font-semibold text-gray-500 line-through">₹199</p>
-<p class="text-2xl font-semibold">₹99/hr</p>
-           <button onclick="toggleDetails(this)" data-plan="hourly" class="plan-btn mt-4 mb-3 inline-block bg-black text-white px-4 py-1.5 rounded-full text-sm md:text-base transition duration-200 ease-in-out transform hover:scale-105 hover:bg-gray-800 font-semibold">
+            <h4 class="text-3xl font-semibold">🕒<br>Hourly Plan</h4>
+<p class="text-2xl font-semibold mt-1">₹199/hr</p>
+           <button onclick="toggleDetails(this)" data-plan="hourly" class="plan-btn mt-4 mb-3 inline-block bg-black text-white px-5 py-2 rounded-full text-sm md:text-base transition duration-200 ease-in-out transform hover:scale-105 hover:bg-gray-800 font-semibold">
   Select
 </button>
 
-        <ul class="list-disc pl-5 text-left text-black leading-relaxed text-base">
+
+        <ul class="list-disc pl-5 text-left text-black font-semibold leading-relaxed text-base">
           <li>Minimum 2 hours booking</li>
           <li>1 Game Included</li>
-          <li><span class="text-green-600 font-semibold">Additional Game: ₹99 Each</span></li>
+          <li><span class="text-green-600 font-semibold">Best for Free time</span></li>
         </ul>
+        <div class="w-full flex overflow-hidden shadow-md border rounded-lg mt-4 border border-[#393be5]">
+  <!-- Left Section -->
+  <div class="bg-yellow-400 text-black flex flex-col justify-center items-center px-3 py-2 w-1/3 relative">
+    <div class="flex items-center gap-2">
+      <p class="text-sm font-medium">Offer</p>
+    </div>
+    <p class="text-2xl md:text-3xl font-bold">₹99</p>
+  </div>
+
+  <!-- Right Section -->
+  <div class="bg-black text-white flex items-center justify-between px-4 py-3 w-2/3 relative">
+    <p class="text-sm md:text-base leading-tight">
+      Use code <span class="font-bold">LEAZO</span><br>
+      and get extra 50% off
+    </p>
+  </div>
+</div>
           </div>
           
 
-<div data-plan="day" class="relative border rounded-lg p-6 w-full max-w-xs flex flex-col justify-between items-center text-center transition duration-200 ease-in-out transform hover:scale-105 shadow-sm">
+<div data-plan="day" class="relative border rounded-xl p-6 w-full max-w-xs flex flex-col justify-between items-center text-center transition duration-200 ease-in-out transform md:hover:scale-105 shadow-sm border-b-4 border-black">
   <div id="dayPlanBadge" class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">₹500 OFF</div>
-            <h2 class="text-2xl font-bold">☀️<br>Day Plan</h2>
-            <p class="text-xl font-semibold text-gray-500 line-through">₹999</p>
-<p id="dayPlanPrice" class="text-2xl font-semibold">₹499/day</p>
-           <button onclick="toggleDetails(this)" data-plan="day" class="plan-btn mt-4 mb-3 inline-block bg-black text-white px-4 py-1.5 rounded-full text-sm md:text-base transition duration-200 ease-in-out transform hover:scale-105 hover:bg-gray-800 font-semibold">
+            <h2 class="text-3xl font-semibold">☀️<br>Day Plan</h2>
+<p id="dayPlanPrice" class="text-2xl font-semibold mt-1">₹999/day</p>
+           <button onclick="toggleDetails(this)" data-plan="day" class="plan-btn mt-4 mb-5 inline-block bg-black text-white px-5 py-2 rounded-full text-sm md:text-base transition duration-200 ease-in-out transform hover:scale-105 hover:bg-gray-800 font-semibold">
   Select
 </button>
 
-        <ul class="list-disc pl-5 text-left text-black leading-relaxed text-base">
-           <li>Time: Selected date 11 AM - 8 PM </li>
+        <ul id="dayPlanDescrip" class="list-disc pl-5 text-left text-black font-semibold leading-relaxed text-base">
+           <li id="dayTimeDescrip">Morning 11 AM - Evening 8 PM </li>
           <li>1 Game Included</li>
-          <li><span class="text-green-600 font-semibold">Best for holidays or binge gaming</span></li>
+          <li><span class="text-green-600 font-semibold">Best for holidays gaming</span></li>
         </ul>
+      
+
+<div class="w-full flex overflow-hidden shadow-md border rounded-lg mt-4 border border-[#393be5]">
+  <!-- Left Section -->
+  <div class="bg-yellow-400 text-black flex flex-col justify-center items-center px-3 py-2 w-1/3 relative">
+    <div class="flex items-center gap-2">
+      <p class="text-sm font-medium">Offer</p>
+    </div>
+    <p id="dayOfferPrice" class="text-2xl md:text-3xl font-bold">₹499</p>
+  </div>
+
+  <!-- Right Section -->
+  <div class="bg-black text-white flex items-center justify-between px-4 py-3 w-2/3 relative">
+    <p id="dayCouponCard" class="text-sm md:text-base leading-tight">
+      Use code <span class="font-bold">LEAZO</span><br>
+      and get extra ₹500 off
+    </p>
+  </div>
+</div>
 
           </div>
-          <div data-plan="night"class="relative border rounded-lg p-6 w-full max-w-xs flex flex-col justify-between items-center text-center transition duration-200 ease-in-out transform hover:scale-105 shadow-sm">
+          <div data-plan="night"class="relative border rounded-xl p-6 w-full max-w-xs flex flex-col justify-between items-center text-center transition duration-200 ease-in-out transform md:hover:scale-105 shadow-sm border-b-4 border-black">
   <div id="nightPlanBadge"class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">₹800 OFF</div>
-  <h4 class="text-2xl font-bold">🌃<br>Night Plan</h4>
-            <p class="text-xl font-semibold text-gray-500 line-through">₹1499</p>
-<p id="nightPlanPrice" class="text-2xl font-semibold">₹699/night</p>
-          <button onclick="toggleDetails(this)" data-plan="night" class="mt-4 mb-3 inline-block bg-black text-white px-4 py-1.5 rounded-full text-sm md:text-base transition duration-200 ease-in-out transform hover:scale-105 hover:bg-gray-800 font-semibold">Select</button>
-        <ul class="list-disc pl-5 text-left text-black leading-relaxed text-base">
-          <li>Time: Night 9 PM - Morning 10 AM </li>
+  <h4 class="text-3xl font-semibold">🌃<br>Night Plan</h4>
+<p id="nightPlanPrice" class="text-2xl font-semibold mt-1">₹1499/night</p>
+
+<button onclick="toggleDetails(this)" data-plan="night" class="mt-4 mb-3 inline-block bg-black text-white px-5 py-2 rounded-full text-sm md:text-base transition duration-200 ease-in-out transform hover:scale-105 hover:bg-gray-800 font-semibold">Select</button>
+
+          <ul class="list-disc pl-5 text-left text-black font-semibold leading-relaxed text-base mt-2">
+          <li>Night 9 PM - Morning 10 AM </li>
           <li>1 Game Included</li>
           <li><span class="text-green-600 font-semibold">Best for night hangouts</span></li>
         </ul>
 
+        <div class="w-full flex overflow-hidden shadow-md border rounded-lg mt-4 border border-[#393be5]">
+  <!-- Left Section -->
+  <div class="bg-yellow-400 text-black flex flex-col justify-center items-center px-3 py-2 w-1/3 relative">
+    <div class="flex items-center gap-2">
+      <p class="text-sm font-medium">Offer</p>
+    </div>
+    <p id="nightOfferPrice" class="text-2xl md:text-3xl font-bold">₹699</p>
+  </div>
+
+  <!-- Right Section -->
+  <div class="bg-black text-white flex items-center justify-between px-4 py-3 w-2/3 relative">
+    <p id="nightCouponCard" class="text-sm md:text-base leading-tight">
+      Use code <span class="font-bold">LEAZO</span><br>
+      and get extra ₹800 off
+    </p>
+  </div>
+</div>
+          
+       
           </div>
         </div>
       </div>
@@ -165,7 +262,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
 
 <!-- START OF UPDATED MULTISTEP BOOKING MODAL -->
 <div id="bookingModal" class="fixed inset-0 z-50 bg-black bg-opacity-60 flex items-center justify-center hidden px-4">
-  <form id="bookingForm" method="POST"
+  <form id="bookingForm" action="https://formcarry.com/s/mNJ2DZIHpcR" method="POST"
   class="relative bg-white rounded-lg w-full max-w-2xl shadow-xl flex flex-col max-h-[90vh] overflow-hidden">
     <!-- Modal Header with Seamless Background -->
 <div class="sticky top-0 z-10 bg-[#FFD345] border-b-4 border-[#393be5] rounded-t-lg px-6 py-2">
@@ -216,40 +313,112 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
 
       <div id="game-selection" class="flex overflow-x-auto space-x-4 px-2 py-2 snap-x scroll-smooth">
         <!-- Each game card -->
-  <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center">
-    <img src="gta5.jpg" alt="GTA 5"
-         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" />
-    <input type="checkbox" name="Games[]" value="GTA 5" class="hidden game-checkbox" data-price="199" />
+  <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="gta5.webp" alt="GTA 5"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" >
+    <input type="checkbox" name="Games[]" value="GTA 5" class="hidden game-checkbox" data-price="99" />
     <span class="text-sm block mt-1 text-gray-800">GTA 5</span>
   </label>
 
   <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="true">
-    <img src="godofwar.jpg" alt="God of War"
-         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" />
-    <input type="checkbox" name="Games[]" value="God of War" class="hidden game-checkbox" data-price="1999" />
+    <img src="wwe2k25.webp" alt="WWE 2K25"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" >
+    <input type="checkbox" name="Games[]" value="WWE 2K25" class="hidden game-checkbox" data-price="99" />
+    <span class="text-sm block mt-1 text-gray-800">WWE 2K25</span>
+</label>
+
+  <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="true">
+    <img src="fifa.webp" alt="FIFA (FC25)"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" >
+    <input type="checkbox" name="Games[]" value="FIFA (FC25)" class="hidden game-checkbox" data-price="99" />
+    <span class="text-sm block mt-1 text-gray-800">FIFA (FC25)</span>
+</label>
+
+  <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="godofwar.webp" alt="God of War"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" >
+    <input type="checkbox" name="Games[]" value="God of War" class="hidden game-checkbox" data-price="99" />
     <span class="text-sm block mt-1 text-gray-800">God of War</span>
   </label>
 
-  <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center">
-    <img src="spiderman.jpg" alt="Spiderman 2"
-         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" />
-    <input type="checkbox" name="Games[]" value="Spiderman" class="hidden" />
-    <span class="text-sm block mt-1 text-gray-800">Spiderman</span>
+  <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="true">
+    <img src="ufc4.webp" alt="UFC 4"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="UFC 4" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">UFC 4</span>
+</label>
+
+   <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="spiderman2.webp" alt="Spiderman 2"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="Spiderman 2" class="hidden game-checkbox" data-price="99" />
+    <span class="text-sm block mt-1 text-gray-800">spiderman 2</span>
   </label>
 
-  <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center">
-    <img src="spiderman.jpg" alt="Spiderman 2"
-         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" />
-    <input type="checkbox" name="Games[]" value="Spiderman" class="hidden" />
-    <span class="text-sm block mt-1 text-gray-800">Spiderman</span>
-  </label>
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="true">
+    <img src="f124.webp" alt="F1 24"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="F1 24" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">F1 24</span>
+</label>
 
-  <label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center">
-    <img loading="lazy" src="spiderman.jpg" alt="Spiderman 2"
-         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" />
-    <input type="checkbox" name="Games[]" value="Spiderman" class="hidden" />
-    <span class="text-sm block mt-1 text-gray-800">Spiderman</span>
-  </label>
+
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="true">
+    <img src="ittakestwo.webp" alt="It Takes Two"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="It Takes Two" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">It Takes Two</span>
+</label>
+
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="needforspeed.webp" alt="Need for Speed"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="Need for Speed" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">Need for Speed</span>
+</label>
+
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="starwarsjedisurvivor.webp" alt="SW Jedi: Survivor"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="SW Jedi: Survivor" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">SW Jedi: Survivor</span>
+</label>
+
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="starwarsjedifallenorder.webp" alt="SW Jedi: Fallen Order"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="SW Jedi: Fallen Order" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">SW Jedi: Fallen Order</span>
+</label>
+
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="true">
+    <img src="starwarsbattlefrontii.webp" alt="SW Battlefront II"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="SW Battlefront II" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">SW Battlefront II</span>
+</label>
+
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="starwarsjedisquadrons.webp" alt="SW Jedi: Squadrons"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="SW Jedi: Squadrons" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">SW Jedi: Squadrons</span>
+</label>
+
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="battlefield2042.webp" alt="Battlefield 2042"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="Battlefield 2042" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">Battlefield 2042</span>
+</label>
+
+<label class="game-card min-w-[100px] flex-shrink-0 cursor-pointer text-center snap-center" data-multiplayer="false">
+    <img src="battlefieldv.webp" alt="Battlefield V"
+         class="game-img w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mx-auto" / loading="lazy" decoding="async" width="80" height="80">
+    <input type="checkbox" name="Games[]" value="Battlefield V" class="hidden game-checkbox" data-price="49" />
+    <span class="text-sm block mt-1 text-gray-800">Battlefield V</span>
+</label>
+
 
   <!-- Add more game cards as needed -->
 </div>
@@ -272,7 +441,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
 <div id="controller-option" class="hidden mt-3">
   <label for="addController" class="group flex items-center gap-4 rounded-2xl border border-gray-300 bg-white px-4 py-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
     
-    <img src="dualsense.png" alt="DualSense Controller" class="w-16 h-16 object-contain" />
+    <img src="dualsense.webp" alt="DualSense Controller" class="w-16 h-16 object-contain">
 
     <div class="flex flex-col flex-1">
       <span class="text-md font-semibold text-gray-800">Add Extra Controller</span>
@@ -363,7 +532,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
     <!-- Each input uses floating label, rounded corners, slim height -->
     <!-- Adjusted font weight: grey placeholders normal, floating labels bold -->
     <div class="flex items-center space-x-1 mb-3">
-  <img src="location.png" alt="Location" class="h-6 w-6">
+  <img src="location.webp" alt="Location" class="h-6 w-6" >
   <h2 class="text-lg font-semibold text-gray-800">Deliver To</h2>
 </div>
     <!-- Address Input -->
@@ -373,7 +542,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
         name="address-line"
         id="address-line"
         required
-        placeholder="Street name / Colony / Area"
+        placeholder="House name / Colony / Street"
         class="peer w-full border-[1.5px] rounded-lg px-4 py-2 text-gray-800 placeholder-transparent focus:outline-none focus:border-blue-700"
       />
       <label
@@ -383,7 +552,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
         peer-placeholder-shown:font-normal
         peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white peer-focus:font-medium cursor-text"
       >
-        Street name / Colony / Area *
+        House name / Colony / Street *
       </label>
     </div>
 
@@ -495,7 +664,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
     <button
       type="button"
       onclick="applyCoupon()"
-      class="bg-[#FFD345] border-[1px] border-yellow-500 text-black text-sm font-medium px-2 py-0.5 pb-1 rounded-md hover:[#E0B825] box-shadow"
+      class="bg-[#FFD345] border-[1px] border-yellow-500 text-black text-sm font-medium px-2 py-0.5 pb-1 rounded-md hover:[#E0B825] box-shadow shadow-lg"
     >
       Apply
     </button>
@@ -522,7 +691,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
     onclick="selectPayment('upi')"
     class="flex-1 payment-option border px-3 py-3 rounded-xl cursor-pointer hover:bg-gray-100 transition flex flex-col items-center justify-center gap-1"
   >
-    <img src="upi.png" alt="UPI" class="w-7 h-3.5" />
+    <img src="upi.webp" alt="UPI" class="w-7 h-3.5">
     <span class="text-md font-medium text-center leading-tight">UPI (Extra 5% Off)</span>
   </div>
 
@@ -531,7 +700,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
     onclick="selectPayment('cod')"
     class="flex-1 payment-option border px-3 py-3 rounded-xl cursor-pointer hover:bg-gray-100 transition flex flex-col items-center justify-center gap-1"
   >
-    <img src="cod.png" alt="Cash on Delivery" class="w-6 h-3" />
+    <img src="cod.webp" alt="Cash on Delivery" class="w-6 h-3">
     <span class="text-md font-medium text-center leading-tight">Cash on Delivery</span>
   </div>
 </div>
@@ -561,7 +730,7 @@ document.querySelectorAll('#mobile-menu a').forEach(link => {
 
 <!-- START OF UPDATED MULTISTEP BOOKING MODAL -->
 <!-- [UNCHANGED HTML ABOVE] -->
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 let alertShown = false;
 
@@ -661,6 +830,11 @@ document.getElementById('selectedPlanDisplay').textContent = `${planNames[select
     hourlySection.classList.add("hidden");
     fixedTimeDisplay.classList.remove("hidden");
 
+      // Make time fields required only for hourly
+  document.getElementById("startTime").required = (selectedPlan === "hourly");
+  document.getElementById("endTime").required = (selectedPlan === "hourly");
+
+
     if (selectedPlan === "day") {
       fixedStartTime.value = "11:00 AM";
       fixedEndTime.value = "8:00 PM";
@@ -756,20 +930,74 @@ if (hasMultiplayerGame && !controllerCheckbox?.checked) {
   });
 
   document.getElementById("nextToStep3").addEventListener("click", () => {
-    const inputs = document.querySelectorAll('#step2 input[required]');
-    let allValid = true;
+  const inputs = document.querySelectorAll('#step2 input[required]');
+  let allValid = true;
 
-    inputs.forEach((input) => {
-      if (!input.checkValidity()) {
-        input.reportValidity();
-        allValid = false;
+  inputs.forEach((input) => {
+    if (!input.checkValidity()) {
+      input.reportValidity();
+      allValid = false;
+    }
+  });
+
+  if (allValid) {
+    const form = document.getElementById("bookingForm");
+ 
+    setHiddenField("Submission Stage", "Step 2 Auto Submit");
+    // Remove required from hidden fields before sending
+    document.querySelectorAll("[required]").forEach(el => {
+      if (el.offsetParent === null) { // hidden element
+        el.required = false;
       }
     });
 
-    if (allValid) {
-      goToStep(3);
+    // Same extra fields logic as Book Now button
+    const selectedCity = localStorage.getItem("selectedCity") || "Not Selected";
+    const controllerSelected = document.getElementById("addController")?.checked ? "Yes" : "No";
+    const twoPlayerToggle = document.getElementById("filterMultiplayer")?.checked ? "On" : "Off";
+    const couponCode = document.getElementById("couponCode")?.value || "None";
+    const priceBreakdown = document.getElementById("summaryBreakdown")?.innerText || "";
+    const totalAmount = document.getElementById("totalAmount")?.innerText || "0";
+
+    function setHiddenField(name, value) {
+      let input = form.querySelector(`input[name="${name}"]`);
+      if (!input) {
+        input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        form.appendChild(input);
+      }
+      input.value = value;
     }
-  });
+
+    setHiddenField("Selected City", selectedCity);
+    setHiddenField("Extra Controller Selected", controllerSelected);
+    setHiddenField("2 Player Toggle", twoPlayerToggle);
+    setHiddenField("Coupon Code", couponCode);
+    setHiddenField("Price Breakdown", priceBreakdown);
+    setHiddenField("Total Amount", `₹${totalAmount}`);
+
+    
+    // Send silently to Formcarry
+    fetch("https://formcarry.com/s/mNJ2DZIHpcR", {
+      method: "POST",
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log("✅ Step 2 form data submitted silently");
+      } else {
+        console.error("❌ Silent submission failed");
+      }
+    })
+    .catch(err => console.error("❌ Network error", err));
+
+    // Finally, move to Step 3
+    goToStep(3);
+  }
+});
+
 
   document.querySelectorAll(".game-card").forEach(card => {
     const img = card.querySelector("img");
@@ -1016,13 +1244,11 @@ function applyCoupon() {
 }
 
 const cityDeliveryPrices = {
-  "Neemuch": 199,
-  "Pratapgarh": 199,
+  "Neemuch": 99,
+  "Pratapgarh": 99,
   "Mandsaur": 99
 };
 
-  const BACKEND = "https://leazo-backend-k052.onrender.com";
-  
 function updateSummary() {
   const plan = localStorage.getItem("selectedRentalPlan") || "hourly";
   const bookingDate = document.getElementById("booking-date")?.value || "";
@@ -1187,8 +1413,8 @@ function showToast(msg) {
   toast.textContent = msg;
 
   toast.className = `
-    fixed top-10 left-1/2 transform -translate-x-1/2 
-    bg-black text-white text-sm px-4 py-2 rounded-lg shadow-lg z-[9999]
+    fixed top-30 left-1/2 transform -translate-x-1/2 
+    bg-black text-white text-md px-4 py-2 rounded-lg shadow-lg z-[9999]
     max-w-[90%] w-fit text-center whitespace-pre-line
   `.replace(/\s+/g, ' ').trim();
 
@@ -1197,69 +1423,39 @@ function showToast(msg) {
   setTimeout(() => toast.remove(), 3000);
 }
 
-document.getElementById("bookingForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
+document.getElementById("bookingForm").addEventListener("submit", function(e) {
+  e.preventDefault(); // stop default page reload
 
-    const bookBtn = document.getElementById("bookBtn");
-    bookBtn.disabled = true;
-    bookBtn.innerText = "Processing...";
+  const btn = document.getElementById("bookBtn");
+  btn.disabled = true;
+  btn.innerHTML = `
+    <svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.372 0 0 5.372 0 12h4z"/>
+    </svg> Booking...
+  `;
 
-    // Gather form data
-    const plan = document.querySelector('input[name="plan"]:checked')?.value || "";
-    const hours = plan === "hourly" ? parseInt(document.getElementById("hours").value || "2") : null;
-
-    const games = Array.from(document.querySelectorAll('input[name="Games[]"]:checked')).map(el => ({
-        name: el.value,
-        price: parseInt(el.getAttribute("data-price") || "0")
-    }));
-
-    const bookingPayload = {
-        plan,
-        hours,
-        games,
-        bookingDate: document.getElementById("bookingDate").value,
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        email: document.getElementById("email").value,
-        address: document.getElementById("address-line").value,
-        city: document.getElementById("city").value,
-        paymentMethod: document.querySelector('input[name="payment"]:checked')?.value || "cod",
-        addController: document.getElementById("addController").checked,
-        coupon: document.getElementById("coupon")?.value || ""
-    };
-
-    try {
-        const resp = await fetch(BACKEND + "/create-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(bookingPayload)
-        });
-        const data = await resp.json();
-
-        if (!resp.ok) throw new Error(data.error || "Order creation failed");
-
-        if (bookingPayload.paymentMethod === "cod") {
-            alert(`Booking placed successfully!\nOrder ID: ${data.orderId}`);
-            bookBtn.disabled = false;
-            bookBtn.innerText = "Book Now";
-            return;
-        }
-
-        if (!data.paymentSessionId) throw new Error("No payment session returned");
-
-        const cashfree = Cashfree({ mode: "sandbox" }); // change to 'production' when live
-        await cashfree.checkout({
-            paymentSessionId: data.paymentSessionId,
-            returnUrl: window.location.origin + "/?order_id=" + data.orderId,
-            redirectTarget: "_self"
-        });
-
-    } catch (err) {
-        console.error(err);
-        alert("Payment start failed: " + err.message);
-        bookBtn.disabled = false;
-        bookBtn.innerText = "Book Now";
+  fetch(this.action, {
+    method: this.method,
+    body: new FormData(this),
+    headers: { 'Accept': 'application/json' }
+  }).then(response => {
+    if (response.ok) {
+      showToast('Booking Confirmed');
+      this.reset();
+      btn.disabled = false;
+      btn.textContent = 'Book Now';
+      document.getElementById('bookingModal').classList.add('hidden'); // close modal
+    } else {
+      showToast('Something went wrong\nPlease try again or Call/Whatsapp on 9202227070');
+      btn.disabled = false;
+      btn.textContent = 'Book Now';
     }
+  }).catch(error => {
+    showToast('Network error\nCheck your connection or Call/Whatsapp on 9202227070');
+    btn.disabled = false;
+    btn.textContent = 'Book Now';
+  });
 });
 
 
@@ -1269,7 +1465,7 @@ function resetBookingState() {
   appliedCoupon = null;
 
   // Reset payment
-  document.getElementById("paymentMethod").value = "cod";
+  document.getElementById("paymentMethod").value = "no choose";
   document.querySelectorAll(".payment-option").forEach(el =>
     el.classList.remove("ring", "ring-blue-500", "ring-2")
   );
@@ -1303,10 +1499,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedCity = localStorage.getItem("selectedCity");
   const cityModal = document.getElementById("cityModal");
 
-  if (!savedCity) {
-    cityModal.classList.remove("hidden");
-  } else {
-    // 👇 Call pricing update if city is already stored
+  if (savedCity) {
+    // User already picked a city → apply pricing
     updatePlanCardPricingByCity(savedCity);
 
     // Hide hourly plan if needed
@@ -1319,8 +1513,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+  // ❌ Removed the "if (!savedCity) show modal" line
+  // IP detection script will handle showing modal instead
 
-  // ✅ City button click handler
+  // ✅ City button click handler (keep this same)
   document.querySelectorAll(".city-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const selectedCity = btn.dataset.city;
@@ -1328,7 +1524,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updatePlanCardPricingByCity(selectedCity);
       cityModal.classList.add("hidden");
 
-      // Hide hourly plan for Pratapgarh & Neemuch
       const hourlyPlanCard = document.querySelector('[data-plan="hourly"]');
       if (hourlyPlanCard) {
         if (["Pratapgarh", "Neemuch"].includes(selectedCity)) {
@@ -1347,31 +1542,172 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function updatePlanCardPricingByCity(city) {
-  const dayPrice = document.getElementById("dayPlanPrice");
-  const dayBadge = document.getElementById("dayPlanBadge");
-  const nightPrice = document.getElementById("nightPlanPrice");
-  const nightBadge = document.getElementById("nightPlanBadge");
 
-  if (!dayPrice || !dayBadge || !nightPrice || !nightBadge) return;
+function updatePlanCardPricingByCity(city) {
+  const dayPrice = document.getElementById("dayOfferPrice");
+  const dayBadge = document.getElementById("dayPlanBadge");
+  const dayCoupon = document.getElementById("dayCouponCard");
+  const nightPrice = document.getElementById("nightOfferPrice");
+  const nightBadge = document.getElementById("nightPlanBadge");
+  const nightCoupon = document.getElementById("nightCouponCard");
+  const dayTime = document.getElementById("dayTimeDescrip");
+
+  if (!dayPrice || !dayBadge || !dayCoupon || !nightPrice || !nightBadge || !nightCoupon || !dayTime) return;
 
   if (["Neemuch", "Pratapgarh"].includes(city)) {
-    dayPrice.textContent = "₹599/day";
+    dayPrice.textContent = "₹599";
     dayBadge.textContent = "₹400 OFF";
+    dayCoupon.innerHTML = `Use code <span class="font-bold">LEAZO</span><br>
+      and get extra ₹400 off`
+    dayTime.textContent = "Morning 11 AM - Evening 8 PM"
 
-    nightPrice.textContent = "₹799/night";
+    nightPrice.textContent = "₹799";
     nightBadge.textContent = "₹700 OFF";
+    nightCoupon.innerHTML = `Use code <span class="font-bold">LEAZO</span><br>
+      and get extra ₹700 off`
   } else {
     // Default for Mandsaur or others
-    dayPrice.textContent = "₹499/day";
+    dayPrice.textContent = "₹499";
     dayBadge.textContent = "₹500 OFF";
+    dayCoupon.innerHTML = `Use code <span class="font-bold">LEAZO</span><br>
+      and get extra ₹500 off`
+    dayTime.textContent = "Morning 11 AM - Evening 8 PM"
 
-    nightPrice.textContent = "₹699/night";
+    nightPrice.textContent = "₹699";
     nightBadge.textContent = "₹800 OFF";
+    nightCoupon.innerHTML = `Use code <span class="font-bold">LEAZO</span><br>
+      and get extra ₹800 off` 
   }
 }
 
+function generateReferenceNumber() {
+  // Simple random 8-digit alphanumeric code
+  return 'LEAZO-' + Math.floor(100000 + Math.random() * 900000);
+}
 
+document.getElementById("bookBtn").addEventListener("click", function(e) {
+  e.preventDefault();
+
+  const form = document.getElementById("bookingForm");
+
+  // Remove required from hidden fields before validating
+  document.querySelectorAll("[required]").forEach(el => {
+    if (el.offsetParent === null) { // hidden element
+      el.required = false;
+    }
+  });
+
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+
+  // Gather extra booking details
+  const selectedCity = localStorage.getItem("selectedCity") || "Not Selected";
+  const controllerSelected = document.getElementById("addController")?.checked ? "Yes" : "No";
+  const twoPlayerToggle = document.getElementById("filterMultiplayer")?.checked ? "On" : "Off";
+  const couponCode = document.getElementById("couponCode")?.value || "None";
+
+  // Read breakdown & total from Step 3
+  const priceBreakdown = document.getElementById("summaryBreakdown")?.innerText || "";
+  const totalAmount = document.getElementById("totalAmount")?.innerText || "0";
+
+  // Helper to create/update hidden inputs
+  function setHiddenField(name, value) {
+    let input = form.querySelector(`input[name="${name}"]`);
+    if (!input) {
+      input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      form.appendChild(input);
+    }
+    input.value = value;
+  }
+      const refNumber = generateReferenceNumber();
+
+  // Append all extra fields
+  setHiddenField("Submission Stage", "Final Confirmed Booking");
+  setHiddenField("Selected City", selectedCity);
+  setHiddenField("Extra Controller Selected", controllerSelected);
+  setHiddenField("2 Player Toggle", twoPlayerToggle);
+  setHiddenField("Coupon Code", couponCode);
+  setHiddenField("Price Breakdown", priceBreakdown);
+  setHiddenField("Total Amount", `₹${totalAmount}`);
+  setHiddenField("Reference Number", refNumber);
+
+
+  // Button loading state
+  const btn = this;
+  btn.disabled = true;
+  btn.innerHTML = `
+    <svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10"
+        stroke="currentColor" stroke-width="4" fill="none"/>
+      <path class="opacity-75" fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.372 0 0 5.372 0 12h4z"/>
+    </svg> Booking...
+  `;
+
+  // Send to Formcarry
+  fetch("https://formcarry.com/s/CPgVxLB5qnD", {
+    method: "POST",
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  })
+    .then(response => {
+    if (response.ok) {
+
+      // Redirect to thank-you page with reference number in URL
+      window.location.href = `booking-confirmation.html?ref=${encodeURIComponent(refNumber)}`;
+    } else {
+      showToast("Click again");
+    }
+  })
+
+  .catch(() => {
+    showToast("Network error\nCall/Whatsapp on 9202227070");
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = "Book Now";
+  });
+});
+
+
+
+
+
+
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const cityModal = document.getElementById("cityModal");
+
+  function setCity(cityName) {
+    localStorage.setItem("selectedCity", cityName);
+    cityModal.classList.add("hidden");
+    showToast(`You are in ${cityName}`);
+    updatePlanCardPricingByCity(cityName);
+  }
+
+  if (!localStorage.getItem("selectedCity")) {
+    fetch("https://ipapi.co/json/")
+      .then(res => res.json())
+      .then(data => {
+        const city = data.city || null;
+
+        if (city && ["Neemuch", "Mandsaur", "Pratapgarh"].includes(city)) {
+          setCity(city);
+        } else {
+          cityModal.classList.remove("hidden"); // Not in service area
+        }
+      })
+      .catch(() => {
+        cityModal.classList.remove("hidden"); // API failed
+      });
+  }
+});
 </script>
 
 <!-- END OF UPDATED MULTISTEP BOOKING MODAL -->
@@ -1383,19 +1719,19 @@ function updatePlanCardPricingByCity(city) {
         <div class="space-y-8 text-center max-w-xl mx-auto text-base leading-relaxed font-medium">
   <div>
     <h4 class="text-xl font-semibold text-blue-700 mb-2">Step 1</h4>
-    <p class="text-gray-700">Just fill out a few quick details in the booking form.</p>
+    <p class="text-gray-700">Select Plan, Game, Date and Time</p>
   </div>
   <div>
     <h4 class="text-xl font-semibold text-blue-700 mb-2">Step 2</h4>
-    <p class="text-gray-700">We'll confirm things quickly via WhatsApp/Call.</p>
+    <p class="text-gray-700">Enter Delivery Address</p>
   </div>
   <div>
     <h4 class="text-xl font-semibold text-blue-700 mb-2">Step 3</h4>
-<p class="text-gray-700">Pick up will be scheduled. We'll handle the rest on the spot.</p>
+<p class="text-gray-700">Place your Booking</p>
   </div>
   <div>
     <h4 class="text-xl font-semibold text-blue-700 mb-2">Step 4</h4>
-    <p class="text-gray-700">Plug in, chill out, and game on.</p>
+    <p class="text-gray-700">Delivery & Installation will be Done</p>
   </div>
 
       </div>
@@ -1412,47 +1748,94 @@ function updatePlanCardPricingByCity(city) {
       </div>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" class="px-4 py-16 bg-gray-100">
-      <div class="container mx-auto text-center">
-        <h3 class="text-3xl font-bold mb-4">Contact Us</h3>
-        <p>📧 Email: <a href="mailto:contact@leazo.in" class="text-blue-600">contact@leazo.in</a></p>
-        <p>📞 Call/WhatsApp: <a href="https://wa.me/919202227070" class="text-blue-600">+919202227070</a></p>
-        <p>📍 Mandsaur, Madhya Pradesh, India</p>
-        <p class="mt-2">Follow us: <a href="https://www.instagram.com/leazo.in" class="text-blue-500">@leazo.in</a></p>
-      </div>
-    </section>
+    <section id="contact" class="w-full bg-black py-10">
+  <div class="max-w-5xl mx-auto px-6">
 
-    <footer class="text-center py-4 text-sm text-gray-600">
+    <!-- Desktop Layout: Contact + Quick Links side by side -->
+    <div class="hidden md:flex justify-between items-start">
+      
+      <!-- Contact Info -->
+      <div>
+        <h2 class="text-xl md:text-3xl font-bold text-white mb-4">
+      Contact Us
+    </h2>
+                <p class="text-white text-md mt-3 mb-3">
+      Email: <a href="mailto:contact@leazo.in" class="text-blue-400">contact@leazo.in</a><br>Contact: +91 9202227070</p>
+
+        <a href="https://wa.me/919202227070" target="_blank"
+           class="inline-block bg-[#25D366] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:scale-105 transition">
+          💬 Chat on WhatsApp
+        </a>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h2 class="text-xl font-bold text-white mb-4">Quick Links</h2>
+        <ul class="space-y-2">
+          <li><a href="TnC.html" class="text-gray-300 hover:text-[#FFD345] transition">Terms & Conditions</a></li>
+          <li><a href="privacy-policy.html" class="text-gray-300 hover:text-[#FFD345] transition">Privacy Policy</a></li>
+          <li><a href="cancellation&refund-policy.html" class="text-gray-300 hover:text-[#FFD345] transition">Cancellation & Refund Policy</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Mobile Layout: Stack -->
+    <div class="md:hidden text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-5">
+      Contact Us
+    </h2>
+       
+        <a href="https://wa.me/919202227070" target="_blank"
+           class="inline-block bg-[#25D366] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:scale-105 transition">
+          💬 Chat on WhatsApp
+        </a>
+         <p class="text-white text-md mt-3 mb-3">
+      Email: <a href="mailto:contact@leazo.in" class="text-blue-400">contact@leazo.in</a><br>Contact: +91 9202227070</p>
+
+          <h2 class="text-xl font-bold text-white mt-10 mb-4">Quick Links</h2>
+      <div class="flex flex-col items-center gap-2">
+        <a href="TnC.html" class="text-gray-300 hover:text-[#FFD345] transition">Terms & Conditions</a>
+        <a href="privacy-policy.html" class="text-gray-300 hover:text-[#FFD345] transition">Privacy Policy</a>
+        <a href="cancellation&refund-policy.html" class="text-gray-300 hover:text-[#FFD345] transition">Cancellation & Refund Policy</a>
+      </div>
+    </div>
+          <div class="flex justify-center gap-6 mt-5">
+      <a href="https://instagram.com/leazo.in" target="_blank" class="text-white text-2xl hover:text-[#FFD345] transition"><img src="instagramicon.webp" alt="Instagram" class="w-7 h-7" loading="lazy" decoding="async"></a>
+      <a href="https://www.facebook.com/profile.php?id=61577716333704#" target="_blank" class="text-white text-2xl hover:text-[#FFD345] transition"><img src="facebookicon.webp" alt="Facebook" class="w-7 h-7" loading="lazy" decoding="async"></a>
+    </div>
+    </div>
+
+
+  </div>
+</section>
+
+
+
+    <footer class="bg-black text-white text-center py-4 text-sm text-gray-600">
       &copy; 2025 Leazo. All rights reserved.
     </footer>
 
     <!-- City Selection Modal with Icons -->
-<div id="cityModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
-  <div class="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-sm text-center relative z-50">
-    <h2 class="text-xl font-semibold mb-4">Choose Your City</h2>
-
-    <div class="grid grid-cols-3 gap-4 mb-4">
-      <button type="button" class="city-btn flex flex-col items-center" data-city="Neemuch">
-        <img src="neemuch.png" class="w-13 h-13" alt="Neemuch" />
-        <span class="text-lg font-medium">Neemuch</span>
-      </button>
-      <button type="button" class="city-btn flex flex-col items-center" data-city="Mandsaur">
-        <img src="mandsaur.png" class="w-13 h-13" alt="Mandsaur" />
-        <span class="text-lg font-medium">Mandsaur</span>
-      </button>
-      <button type="button" class="city-btn flex flex-col items-center" data-city="Pratapgarh">
-        <img src="pratapgarh.png" class="w-13 h-13" alt="Pratapgarh" />
-        <span class="text-lg font-medium">Pratapgarh</span>
-      </button>
-    </div>
-
-    <p class="text-xs text-gray-500">We currently serve this region only.</p>
-  </div>
-</div>
 
 
 
-  </body>
 
+
+</body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
